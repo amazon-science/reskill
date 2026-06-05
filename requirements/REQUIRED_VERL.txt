@@ -1,0 +1,10 @@
+# ReSkill — validated upstream veRL submodule
+UPSTREAM=https://github.com/volcengine/verl.git
+MODE=pinned_submodule_commit
+TAG=v0.6.1
+COMMIT=d62da4950573d7a4b7ef2362337952e7ab59e78d
+SUBMODULE_PATH=verl
+GIT_SETUP=git submodule update --init --recursive verl
+PIP_INSTALL=pip install -e .
+NOTES=This veRL version matches the editable /work/verl runtime base used by the successful ALFWorld run. ReSkill-specific adapters live under reskill/verl_integration. Do not edit the submodule for ReSkill changes.
+REFRESH=Recompute with: git -C verl rev-parse HEAD

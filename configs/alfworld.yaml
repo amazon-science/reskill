@@ -1,0 +1,53 @@
+defaults:
+  - base
+  - _self_
+
+# ALFWorld: Embodied reasoning
+data:
+  train_files: data/alfworld/train.parquet
+  val_files: data/alfworld/val.parquet
+  train_batch_size: 16
+  val_batch_size: 64
+  max_prompt_length: 4096
+  max_response_length: 512
+
+actor_rollout_ref:
+  actor:
+    ppo_mini_batch_size: 64
+    # verl's FSDPActorConfig requires at least one of ppo_micro_batch_size /
+    # ppo_micro_batch_size_per_gpu when use_dynamic_bsz=False (the default).
+    ppo_micro_batch_size_per_gpu: 4
+    kl_loss_coef: 0.01
+  rollout:
+    tensor_model_parallel_size: 4
+    gpu_memory_utilization: 0.35
+    # Used by compute_log_prob (old-policy logprob recomputation). If None,
+    # verl crashes with `TypeError: 'NoneType' object cannot be interpreted as
+    # an integer` at dp_actor.py:344.
+    log_prob_micro_batch_size_per_gpu: 4
+  ref:
+    # Used by reference-policy logprob computation when use_kl_loss is True.
+    log_prob_micro_batch_size_per_gpu: 4
+
+env:
+  env_name: alfworld/AlfredTWEnv
+  max_steps: 50
+  history_length: 50
+  seed: 42
+  resources_per_worker:
+    num_cpus: 1
+  rollout:
+    n: 8  # Group size G
+  alfworld:
+    eval_dataset: eval_in_distribution
+    val_splits:
+      - eval_in_distribution
+      - eval_out_of_distribution
+
+trainer:
+  total_epochs: 300
+  save_freq: 30
+  test_freq: 10
+  nnodes: 2
+  n_gpus_per_node: 8
+  experiment_name: reskill_alfworld

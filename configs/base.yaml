@@ -1,0 +1,93 @@
+defaults:
+  # `@_global_` merges the verl ppo_trainer config tree at the *root* namespace so
+  # that all of verl's nested defaults (actor, rollout, ref, reward_model, ...) and
+  # their `${oc.select:...}` interpolations resolve correctly. Without `@_global_`
+  # the entire verl tree is packaged under a `verl.` prefix and the inter-key
+  # interpolations break, which surfaces as a long cascade of
+  # `omegaconf.errors.ConfigAttributeError: Key 'X' is not in struct` errors at
+  # runtime (one for each verl subconfig that references its siblings).
+  - ppo_trainer@_global_
+  - _self_
+
+# Make verl's installed config package discoverable on Hydra's search path so
+# users don't need to symlink `configs/verl -> verl/verl` or set HYDRA_CONFIG_PATH.
+hydra:
+  searchpath:
+    - pkg://verl.trainer.config
+
+# RESKILL shared defaults across all datasets
+data:
+  tokenizer: ${actor_rollout_ref.model.path}
+  train_files: null
+  val_files: null
+  prompt_key: prompt
+  reward_fn_key: data_source
+  shuffle: True
+  truncation: error
+  return_raw_chat: True
+
+actor_rollout_ref:
+  model:
+    path: Qwen/Qwen3-4B-Instruct-2507
+    enable_gradient_checkpointing: True
+    trust_remote_code: True
+  actor:
+    strategy: fsdp
+    use_kl_loss: True
+    kl_loss_type: low_var_kl
+    ppo_epochs: 1
+    use_torch_compile: True
+    optim:
+      lr: 1e-6
+      lr_warmup_steps: -1
+      lr_warmup_steps_ratio: 0.0
+      warmup_style: constant
+  rollout:
+    name: vllm
+    gpu_memory_utilization: 0.4
+    tensor_model_parallel_size: 4
+    enforce_eager: False
+    free_cache_engine: False
+    multi_turn:
+      enable: True
+
+algorithm:
+  adv_estimator: grpo
+  use_kl_in_reward: False
+  gamma: 1.0
+  lam: 1.0
+
+reward_model:
+  reward_manager: episode
+
+trainer:
+  project_name: reskill
+  logger: wandb
+  val_before_train: True
+  save_freq: 30
+  test_freq: 10
+  total_epochs: 300
+  resume_mode: disable
+
+env:
+  trigger_skills:
+    enable: True
+    versioned: True
+    ab_test_steps: 5
+    min_reservoir_size: 100
+    max_pattern_history: 200
+    reservoir_max_size: 200
+    max_active_skills: 8
+    min_trigger_rate: 0.5
+    max_proposal_retries: 3
+    max_skill_content_chars: 500
+    skill_llm:
+      backend: bedrock
+      model: us.anthropic.claude-sonnet-4-5-20250929-v1:0
+    skill_prompt_dir: null
+    n_groups: 30
+    max_workers: 16
+    min_success_ratio: 0.3
+    n_version_history: 5
+    force_general_trigger: False
+    weighting_strategy: dynamic

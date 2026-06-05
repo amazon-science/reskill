@@ -1,0 +1,46 @@
+defaults:
+  - base
+  - _self_
+
+# Agentic Search: Multi-hop QA
+data:
+  train_files: data/search/train.parquet
+  val_files: data/search/val.parquet
+  train_batch_size: 256
+  val_batch_size: 512
+  max_prompt_length: 4096
+  max_response_length: 512
+
+actor_rollout_ref:
+  actor:
+    ppo_mini_batch_size: 256
+    ppo_micro_batch_size_per_gpu: 16
+    kl_loss_coef: 0.001
+  rollout:
+    tensor_model_parallel_size: 2
+    gpu_memory_utilization: 0.4
+
+env:
+  env_name: search
+  seed: 0
+  max_steps: 30
+  history_length: 30
+  resources_per_worker:
+    num_cpus: 0.1
+  rollout:
+    n: 5  # Group size G
+  search:
+    search_url: http://localhost:8000/retrieve
+    topk: 3
+    timeout: 60
+    log_requests: false
+  trigger_skills:
+    weighting_strategy: dynamic
+
+trainer:
+  total_epochs: 300
+  save_freq: 50
+  test_freq: 5
+  nnodes: 1
+  n_gpus_per_node: 8
+  experiment_name: reskill_search
