@@ -1,0 +1,45 @@
+defaults:
+  - base
+  - _self_
+
+# ScienceWorld: Science discovery
+data:
+  train_files: data/scienceworld/train.parquet
+  val_files: data/scienceworld/val.parquet
+  train_batch_size: 16
+  val_batch_size: 32
+  max_prompt_length: 6000
+  max_response_length: 1024
+
+actor_rollout_ref:
+  actor:
+    ppo_mini_batch_size: 64
+    kl_loss_coef: 0.01
+  rollout:
+    tensor_model_parallel_size: 4
+    gpu_memory_utilization: 0.4
+
+env:
+  env_name: scienceworld
+  max_steps: 30
+  history_length: 30
+  rollout:
+    n: 8  # Group size G
+  scienceworld:
+    task_names:
+      - power-component
+      - test-conductivity
+    val_task_names:
+      - power-component-renewable-vs-nonrenewable-energy
+      - test-conductivity-of-unknown-substances
+    simplification_str: easy
+    val_splits:
+      - dev
+
+trainer:
+  total_epochs: 300
+  save_freq: 30
+  test_freq: 15
+  nnodes: 2
+  n_gpus_per_node: 8
+  experiment_name: reskill_scienceworld

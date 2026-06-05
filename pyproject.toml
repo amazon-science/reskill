@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "reskill"
+version = "1.0.0"
+description = "RESKILL: Reconciling Skill Creation with Policy Optimization in Agentic RL"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.1.0",
+    "transformers>=4.40.0",
+    "ray[default]>=2.10.0",
+    "click<8.2",
+    "hydra-core>=1.3.0",
+    "omegaconf>=2.3.0",
+    "numpy>=1.24.0",
+    "pandas>=2.0.0",
+    "pyarrow>=12.0.0",
+    "huggingface_hub>=0.20.0",
+    "wandb>=0.16.0",
+    "boto3>=1.34.0",
+    "tqdm",
+]
+
+[project.optional-dependencies]
+# `fast-downward-textworld` is required by textworld's PddlEnv (used by alfworld);
+# `textworld[pddl]` pulls it in transitively.
+alfworld = ["alfworld>=0.4.2", "gymnasium>=1.3.0", "pyyaml>=6.0.0", "textworld[pddl]>=1.7.0"]
+search = ["gym>=0.26.0", "requests>=2.31.0"]
+scienceworld = ["gymnasium>=0.29.0", "scienceworld>=1.1.0"]
+vllm = ["vllm>=0.8.5"]
+benchmarks = [
+    "alfworld>=0.4.2",
+    "gym>=0.26.0",
+    "gymnasium>=1.3.0",
+    "pyyaml>=6.0.0",
+    "requests>=2.31.0",
+    "scienceworld>=1.1.0",
+    "textworld[pddl]>=1.7.0",
+]
+dev = ["pytest", "black", "ruff"]
+
+[tool.setuptools.packages.find]
+include = ["reskill*"]
+
+[tool.pytest.ini_options]
+norecursedirs = ["verl"]
