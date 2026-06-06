@@ -44,7 +44,7 @@ class AlfWorldEnvironmentManager(EnvironmentManagerBase):
         self.memory = SimpleMemory()
 
         max_prompt_tokens = getattr(config.data, 'max_prompt_length', 4096)
-        obs_char_ratio = config.env.get('obs_char_ratio', 1.8)
+        obs_char_ratio = config.env.get('obs_char_ratio', 2.5)
         self.max_obs_chars = int(max_prompt_tokens * obs_char_ratio)
 
         self.retrieval_memory = None

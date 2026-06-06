@@ -7,7 +7,7 @@ sampling, bundle testing, and skill-policy co-evolution.*
 Official code for the paper:
 **ReSkill: Reconciling Skill Creation with Policy Optimization in Agentic RL**.
 
-[![Paper](https://img.shields.io/badge/Paper-arXiv%202606.01619-b31b1b)](https://arxiv.org/abs/2606.01619) [![veRL](https://img.shields.io/badge/built%20on-veRL%20v0.6.1-blue)](https://github.com/verl-project/verl/tree/d62da4950573d7a4b7ef2362337952e7ab59e78d) [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
+[![Paper](https://img.shields.io/badge/Paper-arXiv%202606.01619-b31b1b)](https://arxiv.org/abs/2606.01619) [![Project Page](https://img.shields.io/badge/Project-Page-232F3E)](website/) [![veRL](https://img.shields.io/badge/built%20on-veRL%20v0.6.1-blue)](https://github.com/verl-project/verl/tree/d62da4950573d7a4b7ef2362337952e7ab59e78d) [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
 
 ---
 
@@ -44,8 +44,8 @@ ReSkill combines three pieces:
 ## ⚙️ Installation
 
 ```bash
-git clone https://github.com/ZLHe0/ReSkill.git
-cd ReSkill
+git clone https://github.com/amazon-science/reskill.git
+cd reskill
 git submodule update --init --recursive verl
 pip install -e .
 ```
@@ -110,6 +110,9 @@ for their open-source foundations and inspiration, which ReSkill builds upon.
 Apache 2.0
 
 ## 📚 Citation
+
+If you find this work helpful, please kindly consider citing our paper and
+starring the repository.
 
 ```bibtex
 @article{he2026reskill,
