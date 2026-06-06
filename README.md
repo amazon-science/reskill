@@ -108,3 +108,14 @@ for their open-source foundations and inspiration, which ReSkill builds upon.
 ## 📄 License
 
 Apache 2.0
+
+## 📚 Citation
+
+```bibtex
+@article{he2026reskill,
+  title={ReSkill: Reconciling Skill Creation with Policy Optimization in Agentic RL},
+  author={He, Zelin and Lin, Haotian and Han, Boran and Zhu, Wei and Fang, Haoyang and Wang, Bernie and Zhu, Xuan and Li, Runze and Reimherr, Matthew},
+  journal={arXiv preprint arXiv:2606.01619},
+  year={2026}
+}
+```
