@@ -25,7 +25,7 @@ class ReSkillSearchEnvManager(ReSkillEnvManagerBase, SearchEnvironmentManager):
 
         # Search prompts are token-dense; use a tighter char budget.
         max_prompt_tokens = getattr(config.data, 'max_prompt_length', 4096)
-        obs_char_ratio = config.env.get('obs_char_ratio', 1.2)
+        obs_char_ratio = config.env.get('obs_char_ratio', 2.5)
         self.max_obs_chars = int(max_prompt_tokens * obs_char_ratio)
 
     def build_text_obs(self, text_obs: List[str],

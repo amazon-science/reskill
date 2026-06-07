@@ -29,7 +29,7 @@ class SearchEnvironmentManager(EnvironmentManagerBase):
         # because retrieval passages have dense entities/dates that tokenize
         # at ~1.5 chars/token, plus the chat template adds ~100 tokens overhead.
         max_prompt_tokens = getattr(config.data, 'max_prompt_length', 4096)
-        obs_char_ratio = config.env.get('obs_char_ratio', 1.2)
+        obs_char_ratio = config.env.get('obs_char_ratio', 2.5)
         self.max_obs_chars = int(max_prompt_tokens * obs_char_ratio)
 
         self.retrieval_memory = None

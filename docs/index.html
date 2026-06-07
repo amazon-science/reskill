@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ReSkill: Reconciling Skill Creation with Policy Optimization in Agentic RL</title>
+    <meta
+      name="description"
+      content="ReSkill is an RL-in-the-loop skill creation framework that reconciles reusable skill evolution with policy optimization for agentic RL."
+    >
+    <meta property="og:title" content="ReSkill">
+    <meta property="og:description" content="Reconciling Skill Creation with Policy Optimization in Agentic RL.">
+    <meta property="og:type" content="article">
+    <meta property="og:image" content="assets/system-overview.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="citation_title" content="ReSkill: Reconciling Skill Creation with Policy Optimization in Agentic RL">
+    <meta name="citation_publication_date" content="2026">
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <a class="brand-logo" href="https://www.amazon.science/" target="_blank" rel="noopener" aria-label="Amazon Science">
+      <img src="assets/amazon-science.png" alt="Amazon Science">
+    </a>
+
+    <nav class="page-nav" aria-label="Section navigation">
+      <a href="#overview">Overview</a>
+      <a href="#method">Method</a>
+      <a href="#results">Results</a>
+      <a href="#skills">Skills</a>
+      <a href="#codebase">Codebase</a>
+    </nav>
+
+    <header class="hero">
+      <div class="container">
+        <p class="kicker">Agentic RL with skill co-evolution</p>
+        <h1>ReSkill: Reconciling Skill Creation with Policy Optimization in Agentic RL</h1>
+        <div class="link-row" aria-label="Project links">
+          <a class="button primary" href="https://arxiv.org/abs/2606.01619" target="_blank" rel="noopener">Paper 📄</a>
+          <a class="button" href="https://github.com/amazon-science/reskill" target="_blank" rel="noopener">Code ⭐</a>
+        </div>
+        <p class="hero-summary">
+          ReSkill turns skill creation into an RL-in-the-loop process. During
+          policy optimization, it diagnoses rollout failures, proposes skill
+          revisions, tests competing skill versions inside GRPO groups, and
+          keeps the versions that best support the evolving policy.
+        </p>
+      </div>
+    </header>
+
+    <main>
+      <section id="overview" class="section">
+        <div class="container-wide">
+          <div class="section-heading">
+            <p class="eyebrow">Overview</p>
+            <h2>Skills evolve with the policy, not beside it.</h2>
+          </div>
+          <figure class="figure-panel">
+            <img src="assets/system-overview.png" alt="ReSkill system overview comparing RL-in-the-loop skill creation with decoupled skill updates.">
+            <figcaption>
+              (a) Inspired by Anthropic's human-in-the-loop Skill Creator, ReSkill recasts
+              skill creation as an RL-in-the-loop process. (b) Compared with decoupled
+              skill-update methods, ReSkill exposes a highly configurable loop for jointly
+              evolving skills and policies.
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section id="method" class="section">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Core idea</p>
+            <h2>Three pieces make each rollout do more work.</h2>
+          </div>
+          <div class="card-grid">
+            <article class="info-card">
+              <h3>RL training with per-turn skill loading</h3>
+              <p>
+                veRL handles distributed RL. ReSkill adds skill-conditioned
+                multi-turn rollouts, loading only the active skill guidance
+                needed for the current turn.
+              </p>
+            </article>
+            <article class="info-card">
+              <h3>RL-in-the-loop skill creation</h3>
+              <p>
+                Rollout experience becomes feedback for diagnosing failures,
+                revising skill triggers, and proposing add, modify, or delete
+                operations during training.
+              </p>
+            </article>
+            <article class="info-card">
+              <h3>Skill versioning and sampling</h3>
+              <p>
+                Competing skill banks are tested within GRPO rollout groups.
+                Thompson Sampling controls which versions are explored,
+                accepted, rejected, or pruned.
+              </p>
+            </article>
+          </div>
+        </div>
+        <div class="container-wide">
+          <figure class="figure-panel">
+            <img src="assets/pipeline.png" alt="ReSkill pipeline with RL training, skill creation, and skill evolution.">
+            <figcaption>
+              ReSkill uses each rollout for policy gradients, skill-creator
+              evidence, and version comparison, keeping the rollout budget close
+              to standard GRPO.
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section id="results" class="section">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Results</p>
+            <h2>Reconciled skill-policy updates improve both seen and unseen tasks.</h2>
+          </div>
+        </div>
+
+        <div class="container-wide figure-stack">
+          <figure class="figure-panel">
+            <img src="assets/results-alfworld-search.png" alt="Training dynamics for ALFWorld and Search comparing ReSkill to baselines and ablations.">
+            <figcaption>
+              Training dynamics on held-out validation subsets. ReSkill improves
+              over baseline GRPO, static skill use, and decoupled update
+              variants, especially on unseen splits.
+            </figcaption>
+          </figure>
+        </div>
+
+        <div class="container">
+          <div class="results-explorer" aria-labelledby="results-explorer-title">
+            <div class="explorer-header">
+              <div>
+                <p class="eyebrow">Main evaluation</p>
+                <h3 id="results-explorer-title">Comprehensive ALFWorld and Search results</h3>
+              </div>
+              <p>
+                Switch benchmark and model scale for the compact view. Expand
+                any row to inspect the full seen/unseen task breakdown.
+              </p>
+            </div>
+            <div class="explorer-controls" aria-label="Result table controls">
+              <div class="segmented-control" role="tablist" aria-label="Benchmark">
+                <button type="button" class="active" data-result-tab="benchmark" data-value="alfworld">ALFWorld</button>
+                <button type="button" data-result-tab="benchmark" data-value="search">Search</button>
+              </div>
+              <div class="segmented-control" role="tablist" aria-label="Model scale">
+                <button type="button" class="active" data-result-tab="scale" data-value="4b">4B</button>
+                <button type="button" data-result-tab="scale" data-value="8b">8B</button>
+              </div>
+            </div>
+            <div id="results-table" class="results-table-wrap" aria-live="polite"></div>
+          </div>
+        </div>
+
+        <div class="container-wide figure-stack">
+          <figure class="figure-panel">
+            <img src="assets/generalization-bars.png" alt="Generalization results on ScienceWorld, InterCode-SQL, and WANDS.">
+            <figcaption>
+              Additional benchmark results show the largest gaps on harder or
+              out-of-domain tasks, where skill evolution has more room to
+              discover reusable strategy.
+            </figcaption>
+          </figure>
+
+          <div class="paired-figures">
+            <figure class="figure-panel">
+              <img src="assets/cross-domain-tta.png" alt="Cross-domain test-time adaptation from ALFWorld to ScienceWorld.">
+              <figcaption>
+                Test-time skill adaptation transfers from ALFWorld to
+                ScienceWorld without policy gradient updates.
+              </figcaption>
+            </figure>
+
+            <figure class="figure-panel cost-panel">
+              <img src="assets/cost-analysis-2x2.png" alt="Cost analysis comparing ReSkill overhead against GRPO in a two-by-two plot layout.">
+              <figcaption>
+                ReSkill achieves the highest accuracy ratio among all methods
+                while maintaining competitive training and inference overhead.
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section id="skills" class="section">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">Skill evolution</p>
+            <h2>The skill library is created, tested, refined, and pruned.</h2>
+          </div>
+          <p>
+            ReSkill tracks skill versions over training rather than treating a
+            skill bank as fixed context. Accepted operations tend to become
+            shorter, more conditional, and more aligned with the action space as
+            the policy improves.
+          </p>
+        </div>
+
+        <div class="container-wide">
+          <figure class="figure-panel">
+            <img src="assets/skill-lifecycle.png" alt="Skill-policy co-evolution curves for ALFWorld and Search with add and delete operations.">
+            <figcaption>
+              Skill-policy co-evolution on ALFWorld and Search. Add and delete
+              events are evaluated inside the training loop instead of being
+              adopted automatically.
+            </figcaption>
+          </figure>
+        </div>
+
+      </section>
+
+      <section id="codebase" class="section">
+        <div class="container">
+          <div class="codebase-card">
+            <div>
+              <p class="eyebrow">Codebase</p>
+              <h2>Build agent RL with configurable skill co-evolution.</h2>
+              <p>
+                ReSkill is an easy-to-configure, extensible veRL extension that
+                brings Anthropic-style skill creation into agentic RL training.
+                It provides control over skill versioning, sampling, bundle
+                testing, and customizable skill-policy co-evolution.
+              </p>
+              <p>
+                The codebase is under active development as we continue to
+                improve integration, customization, and supported environments.
+              </p>
+              <p class="star-note">If ReSkill is useful to your work, please consider starring the repository ⭐</p>
+            </div>
+            <a class="button primary" href="https://github.com/amazon-science/reskill" target="_blank" rel="noopener">View code on GitHub</a>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer>
+      <div class="container">
+        <p>
+          ReSkill builds on open-source foundations from
+          <a href="https://github.com/volcengine/verl" target="_blank" rel="noopener">veRL</a>,
+          <a href="https://github.com/langfengq/verl-agent" target="_blank" rel="noopener">verl-agent</a>,
+          and
+          <a href="https://github.com/anthropics/skills/blob/main/skills/skill-creator/SKILL.md" target="_blank" rel="noopener">Anthropic Skill Creator</a>.
+        </p>
+      </div>
+    </footer>
+
+    <script src="site.js"></script>
+  </body>
+</html>
