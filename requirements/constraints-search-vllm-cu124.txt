@@ -4,7 +4,7 @@ torchaudio==2.6.0+cu124
 transformers==4.57.3
 ray==2.48.0
 click==8.1.8
-vllm==0.8.5
+vllm==0.23.0
 hydra-core==1.3.2
 omegaconf==2.3.0
 numpy==1.26.4
