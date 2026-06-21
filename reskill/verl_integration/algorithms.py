@@ -39,6 +39,7 @@ def compute_grpo_outcome_advantage(
     traj_index: np.ndarray,
     epsilon: float = 1e-6,
     norm_adv_by_std_in_grpo: bool = True,
+    double_normalize: bool = True,
 ) -> tuple[torch.Tensor, torch.Tensor]:
     response_length = token_level_rewards.shape[-1]
     scores = token_level_rewards.sum(dim=-1)
@@ -74,7 +75,9 @@ def compute_grpo_outcome_advantage(
                 scores[i] = scores[i] - id2mean[index[i]]
 
         scores = scores.unsqueeze(-1).tile([1, response_length]) * response_mask
-        scores = _masked_whiten(scores, response_mask) * response_mask
+        if double_normalize:
+            # Second, batch-global advantage whitening on top of group normalization.
+            scores = _masked_whiten(scores, response_mask) * response_mask
 
     return scores, scores
 
@@ -92,6 +95,7 @@ def _masked_whiten(values: torch.Tensor, mask: torch.Tensor, eps: float = 1e-8) 
 def compute_trajectory_grpo_advantage(
     data,
     norm_adv_by_std_in_grpo: bool = True,
+    double_normalize: bool = True,
 ) -> DataProto:
     advantages, returns = compute_grpo_outcome_advantage(
         token_level_rewards=data.batch["token_level_rewards"],
@@ -99,6 +103,7 @@ def compute_trajectory_grpo_advantage(
         index=data.non_tensor_batch["uid"],
         traj_index=data.non_tensor_batch["traj_uid"],
         norm_adv_by_std_in_grpo=norm_adv_by_std_in_grpo,
+        double_normalize=double_normalize,
     )
     data.batch["advantages"] = advantages
     data.batch["returns"] = returns

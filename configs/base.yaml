@@ -53,6 +53,11 @@ actor_rollout_ref:
 
 algorithm:
   adv_estimator: grpo
+  # norm_adv_by_std_in_grpo: divide group-centered scores by group std (Dr.GRPO if False).
+  # grpo_double_normalize: add a second batch-global whitening on top of group-norm;
+  #   True (default) = current ReSkill behavior, False = standard group-norm-only GRPO.
+  norm_adv_by_std_in_grpo: True
+  grpo_double_normalize: True
   use_kl_in_reward: False
   gamma: 1.0
   lam: 1.0
