@@ -1025,10 +1025,16 @@ class ReSkillTrainer(RayPPOTrainer):
 
                             norm_adv_by_std_in_grpo = self.config.algorithm.get(
                                 "norm_adv_by_std_in_grpo", True)
+                            # Default True = double-normalize (group-norm + RF++-baseline-style
+                            # masked_whiten tail), reproducing historical ReSkill runs. Set
+                            # algorithm.grpo_double_normalize=false for standard GRPO (group-norm only).
+                            grpo_double_normalize = self.config.algorithm.get(
+                                "grpo_double_normalize", True)
 
                             batch = compute_trajectory_grpo_advantage(
                                 batch,
                                 norm_adv_by_std_in_grpo=norm_adv_by_std_in_grpo,
+                                double_normalize=grpo_double_normalize,
                             )
 
                         if self.use_critic:
