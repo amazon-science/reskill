@@ -30,7 +30,7 @@ pydantic==2.13.4
 # Misc used by retrieval pipeline
 tqdm==4.67.3
 httpx==0.28.1
-aiohttp==3.13.5
+aiohttp==3.14.1
 
 # flash_attn: install from prebuilt CUDA 12 / Torch 2.6 wheel — not a universal
 # package constraint. See constraints-alfworld-vllm-cu124.txt for guidance.
