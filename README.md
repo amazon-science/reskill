@@ -61,6 +61,16 @@ Validated stack pins are recorded under `requirements/`.
 The current benchmark extras are `alfworld`, `search`, and `scienceworld`.
 Additional environment support will be added over time.
 
+Skill creation calls out to an LLM, selected by
+`env.trigger_skills.skill_llm.backend`. The default (`bedrock`) works out of the
+box via `boto3`; the other backends need their matching extra:
+
+| `skill_llm.backend` | Install |
+|---|---|
+| `bedrock` (default) | included |
+| `anthropic` | `pip install -e ".[anthropic]"` |
+| `openai` | `pip install -e ".[openai]"` |
+
 ## 🚀 Usage
 
 Prepare data for an environment:

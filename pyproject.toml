@@ -31,6 +31,12 @@ alfworld = ["alfworld>=0.4.2", "gymnasium>=1.3.0", "pyyaml>=6.0.0", "textworld[p
 search = ["gym>=0.26.0", "requests>=2.31.0"]
 scienceworld = ["gymnasium>=0.29.0", "scienceworld>=1.1.0"]
 vllm = ["vllm>=0.8.5"]
+# Skill-creation LLM backends, named to match
+# `env.trigger_skills.skill_llm.backend` in configs/base.yaml. The default
+# backend (`bedrock`) uses boto3, which is already a core dependency; the other
+# two each need their own SDK.
+anthropic = ["anthropic>=0.40.0"]
+openai = ["openai>=1.0.0"]
 benchmarks = [
     "alfworld>=0.4.2",
     "gym>=0.26.0",
